@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>World Web Radio</title>
+    <style>
+        /* 90's Hi-Fi / Glossy Black Plastic Aesthetic */
+        body {
+            background: #0d0d0d;
+            margin: 0;
+            font-family: 'Tahoma', Geneva, sans-serif;
+        }
+        .hifi-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background: linear-gradient(180deg, #1c1c1c, #0a0a0a);
+            border: 2px solid #333;
+            border-radius: 6px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.05);
+            color:#e0e0e0;
+            position: relative;
+        }
+
+        .section {
+            border: 1px solid #333;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #151515;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+        }
+        .power-volume {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #222;
+        }
+        .power-button {
+            background: #333;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 10px 20px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.7);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            transition: background-color 0.1s;
+            text-transform: uppercase;
+        }
+        .power-button.on {
+            background: #007bff;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.9), 0 0 10px rgba(0,123,255,0.5);
+            border-color: #00aaff;
+        }
+        .power-button:hover {
+            background: #444;
+        }
+        .power-led {
+            width: 12px;
+            height: 12px;
+            background: #111;
+            border: 1px solid #444;
+            border-radius: 50%;
+            margin-top: 10px;
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.9);
+            transition: box-shadow 0.3s, background-color 0.3s;
+        }
+        .power-led.on {
+            background-color: #ff5500;
+            box-shadow: 0 0 12px #ff5500, inset 0 0 6px #ff5500;
+        }
+        .volume-control {
+            flex-grow:1;
+            text-align:center;
+            position:relative;
+            padding: 0 20px;
+        }
+        .volume-label {
+            font-size: 18px;
+            text-transform:uppercase;
+            margin-bottom: 15px;
+            color:#aaa;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+        }
+        .volume-slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #222;
+            border-radius: 8px;
+            border: 2px solid #444;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.6);
+        }
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 20px;
+            background: #000;
+            border: 2px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.8);
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(145deg, #777, #333);
+            border: 3px solid #ff5500;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,85,0,0.5), inset 0 2px 4px rgba(255,255,255,0.1);
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(145deg, #777, #333);
+            border: 3px solid #ff5500;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,85,0,0.5);
+        }
+        .volume-track {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            right: 20px;
+            height: 20px;
+            background: linear-gradient(to right, #333 0%, #00ffff 100%);
+            border-radius: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+        .volume-display {
+            font-size: 32px;
+            font-weight: bold;
+            color:#00ffff;
+            text-shadow:0 0 8px #00ffff;
+            font-family: 'Digital-7', monospace;
+            margin-top: 15px;
+        }
+        .brand-name {
+            font-family:'Impact', sans-serif;
+            font-size: 28px;
+            font-weight: normal;
+            color:#ffc700;
+            text-shadow:0 1px 3px rgba(0,0,0,0.8);
+            letter-spacing: 4px;
+            position: absolute;
+            top: 15px;
+            right: 30px;
+        }
+        .cd-panel {
+            background: #000;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.9);
+            border: 1px solid #333;
+        }
+        .cd-panel input[type="file"] {
+            display:none;
+        }
+        .button-effect {
+            background: #252525;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.6);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.4);
+            transition: background-color 0.1s;
+            width: 95%;
+            display:block;
+            text-align:center;
+        }
+        .button-effect.on {
+            background: #111;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+        }
+        .button-effect:hover {
+            background: #333;
+        }
+
+        /* TABLET-FRIENDLY STATION SELECTOR */
+        .station-grid {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .station-grid.visible {
+            display: grid;
+        }
+        .station-item {
+            background: #222;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: center;
+            transition: all 0.2s;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .station-item:hover {
+            background: #333;
+            border-color: #666;
+        }
+        .station-item.selected {
+            background: #007bff;
+            border-color: #0099ff;
+            box-shadow: 0 0 10px rgba(0,123,255,0.5);
+        }
+        .toggle-stations {
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .toggle-stations:hover {
+            background: #444;
+        }
+
+        .transport-controls button {
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.6);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            transition: background-color 0.1s;
+        }
+        .transport-controls button:hover:not(:disabled) {
+            background: #555;
+        }
+        .transport-controls button:disabled {
+            background: #222;
+            color: #444;
+            cursor:not-allowed;
+            box-shadow:none;
+        }
+
+        /* TABLET-FRIENDLY EQUALIZER */
+        .equalizer {
+            background: #101010;
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            box-shadow: inset 0 0 6px rgba(0,0,0,0.9);
+        }
+        .eq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 15px;
+        }
+        .eq-band {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .eq-band label {
+            font-size: 14px;
+            color: #aaa;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+        .eq-band input[type="range"] {
+            -webkit-appearance: none;
+            width: 60px;
+            height: 120px;
+            background: #000;
+            border: 2px solid #444;
+            border-radius: 4px;
+            cursor: pointer;
+            writing-mode: bt-lr; /* IE */
+            -webkit-writing-mode: vertical-lr; /* WebKit */
+            writing-mode: vertical-lr;
+            -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+        .eq-band input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 50px;
+            height: 20px;
+            background: linear-gradient(145deg, #777, #333);
+            border: 2px solid #999;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .eq-band input[type="range"]::-moz-range-thumb {
+            width: 50px;
+            height: 20px;
+            background: linear-gradient(145deg, #777, #333);
+            border: 2px solid #999;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .eq-value {
+            font-size: 12px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        .spectrum-analyzer {
+            height: 100px;
+            background: #000;
+            position:relative;
+            border: 1px solid #333;
+            border-radius: 4px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
+        }
+        canvas.spectrum-canvas {
+            width:100%;
+            height:100%;
+            display:block;
+        }
+
+        .toggle-compressor {
+            background: #333;
+            border: 1px solid #555;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .toggle-compressor:hover {
+            background: #444;
+        }
+        .compressor-settings {
+            display: none;
+            justify-content: space-around;
+            text-align: center;
+            padding: 10px 0;
+            background: #101010;
+            border-radius: 4px;
+            border: 1px solid #333;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .compressor-settings.visible {
+            display: flex;
+        }
+        .compressor-band {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+        .compressor-band label {
+            font-size: 14px;
+            color: #aaa;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+            margin-bottom: 5px;
+        }
+        .compressor-band input[type="range"] {
+            width: 100px;
+            height: 15px;
+            -webkit-appearance: none;
+            background: #333;
+            border: 1px solid #555;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .compressor-band input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(145deg, #777, #333);
+            border: 1px solid #999;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .compressor-value {
+            font-size: 12px;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            color:#ff0000;
+            text-align:center;
+            padding:10px;
+            font-family:'Tahoma', sans-serif;
+            display:none;
+        }
+
+        /* RESPONSIVE IMPROVEMENTS */
+        @media (max-width: 768px) {
+            .brand-name {
+                position: static;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .power-volume {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .eq-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+            .compressor-settings {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <style>
+        @font-face {
+            font-family: 'Digital-7';
+            src: local('Consolas'), local('Courier New');
+        }
+    </style>
+</head>
+<body>
+    <div class="hifi-container" id="hifiContainer">
+        <div class="section power-volume">
+            <div style="display:flex; flex-direction:column; align-items:center;">
+                <button class="power-button" id="powerButton">PLAY</button>
+                <div class="power-led" id="powerLed"></div>
+            </div>
+            <div class="volume-control">
+                <div class="volume-label">VOLUME</div>
+                <div class="volume-slider-container">
+                    <div class="volume-track"></div>
+                    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
+                </div>
+                <div class="volume-display">50</div>
+            </div>
+            <div class="brand-name">World Web Radio</div>
+        </div>
+
+        <div class="section cd-transport">
+            <div class="cd-panel">
+                <button class="toggle-stations" id="toggleStations">📻 Select Station</button>
+                <div class="station-grid" id="stationGrid">
+                    <div class="station-item">Loading stations...</div>
+                </div>
+                <div id="currentStation" style="text-align: center; color: #00ffff; margin-top: 10px;">No station selected</div>
+            </div>
+        </div>
+
+        <div class="section equalizer">
+            <div class="eq-grid">
+                <div class="eq-band">
+                    <label>31Hz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="31">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>62Hz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="62">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>125Hz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="125">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>250Hz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="250">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>500Hz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="500">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>1kHz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="1000">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>2kHz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="2000">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>4kHz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="4000">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>8kHz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="8000">
+                    <div class="eq-value">0dB</div>
+                </div>
+                <div class="eq-band">
+                    <label>12kHz</label>
+                    <input type="range" min="-12" max="12" value="0" class="eq-slider" data-freq="12000">
+                    <div class="eq-value">0dB</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <button class="toggle-compressor" id="toggleCompressor">🎛️ Compression Settings</button>
+            <div class="compressor-settings" id="compressorPanel">
+                <div class="compressor-band">
+                    <label>Threshold (dB)</label>
+                    <input type="range" id="compressorThreshold" min="-60" max="0" value="-24" step="1">
+                    <span class="compressor-value" id="thresholdValue">-24 dB</span>
+                </div>
+                <div class="compressor-band">
+                    <label>Ratio</label>
+                    <input type="range" id="compressorRatio" min="1" max="20" value="12" step="0.5">
+                    <span class="compressor-value" id="ratioValue">12.0</span>
+                </div>
+                <div class="compressor-band">
+                    <label>Attack (s)</label>
+                    <input type="range" id="compressorAttack" min="0.003" max="1" value="0.003" step="0.001">
+                    <span class="compressor-value" id="attackValue">0.003 s</span>
+                </div>
+                <div class="compressor-band">
+                    <label>Release (s)</label>
+                    <input type="range" id="compressorRelease" min="0.25" max="1" value="0.25" step="0.05">
+                    <span class="compressor-value" id="releaseValue">0.25 s</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section spectrum-analyzer">
+            <canvas id="spectrumCanvas" class="spectrum-canvas"></canvas>
+            <div id="errorMessage" class="error-message">Failed to load audio.</div>
+        </div>
+
+    </div>
+
+    <div style="text-align: center; color: #444; font-size: 14px; margin-top: 20px; text-shadow: 0 1px 1px rgba(0,0,0,0.5);">
+        World Web radio brought to you by Craptronics plc
+    </div>
+    <script>
+        // Global Variables
+        const powerButton = document.getElementById('powerButton');
+        const powerLed = document.getElementById('powerLed');
+        const hifiContainer = document.getElementById('hifiContainer');
+        const errorMessage = document.getElementById('errorMessage');
+        const toggleStations = document.getElementById('toggleStations');
+        const stationGrid = document.getElementById('stationGrid');
+        const currentStationDisplay = document.getElementById('currentStation');
+        const toggleCompressor = document.getElementById('toggleCompressor');
+        const compressorPanel = document.getElementById('compressorPanel');
+        let isPlaying = false;
+        let currentStationUrl = '';
+        let currentStationName = 'No station selected';
+        let pauseTime = 0; // Track when we paused
+
+        // Volume Slider Elements
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeDisplay = document.querySelector('.volume-display');
+        let volume = 50;
+
+        // Audio Elements
+        const eqSliders = document.querySelectorAll('.eq-slider');
+        const compressorThresholdSlider = document.getElementById('compressorThreshold');
+        const compressorRatioSlider = document.getElementById('compressorRatio');
+        const compressorAttackSlider = document.getElementById('compressorAttack');
+        const compressorReleaseSlider = document.getElementById('compressorRelease');
+        const thresholdValueDisplay = document.getElementById('thresholdValue');
+        const ratioValueDisplay = document.getElementById('ratioValue');
+        const attackValueDisplay = document.getElementById('attackValue');
+        const releaseValueDisplay = document.getElementById('releaseValue');
+
+        // Audio Context Variables
+        let audioCtx, analyser, audioElement, source, eqFilters, masterGain, compressor;
+        let isLoadingStation = false; // Prevent rapid station switching
+
+        // Spectrum Analyzer Elements
+        const spectrumCanvas = document.getElementById('spectrumCanvas');
+        const spectrumCtx = spectrumCanvas.getContext('2d');
+
+        // Station selector toggle
+        toggleStations.addEventListener('click', () => {
+            stationGrid.classList.toggle('visible');
+            toggleStations.textContent = stationGrid.classList.contains('visible') ? '📻 Hide Stations' : '📻 Select Station';
+        });
+
+        // Compressor panel toggle
+        toggleCompressor.addEventListener('click', () => {
+            compressorPanel.classList.toggle('visible');
+            toggleCompressor.textContent = compressorPanel.classList.contains('visible') ? '🎛️ Hide Compression' : '🎛️ Compression Settings';
+        });
+
+        // Functions to save/load settings using localStorage
+        function saveSettings() {
+            try {
+                const settings = {
+                    volume: volume,
+                    equalizer: Array.from(eqSliders).map(slider => parseFloat(slider.value)),
+                    compressor: {
+                        threshold: parseFloat(compressorThresholdSlider.value),
+                        ratio: parseFloat(compressorRatioSlider.value),
+                        attack: parseFloat(compressorAttackSlider.value),
+                        release: parseFloat(compressorReleaseSlider.value)
+                    },
+                    currentStation: {
+                        url: currentStationUrl,
+                        name: currentStationName
+                    }
+                };
+                localStorage.setItem('crapTronRadioSettings', JSON.stringify(settings));
+                console.log('Settings saved to localStorage');
+            } catch (e) {
+                console.error('Failed to save settings to localStorage:', e);
+                // Fallback to memory storage
+                window.crapTuronSettings = settings;
+            }
+        }
+
+        function loadSettings() {
+            try {
+                let settings = null;
+
+                // Try to load from localStorage first
+                const savedSettings = localStorage.getItem('crapTronRadioSettings');
+                if (savedSettings) {
+                    settings = JSON.parse(savedSettings);
+                    console.log('Settings loaded from localStorage');
+                } else {
+                    // Fallback to memory storage
+                    settings = window.crapTuronSettings;
+                    console.log('Settings loaded from memory (localStorage not available)');
+                }
+
+                if (settings) {
+                    volume = settings.volume || 50;
+                    volumeSlider.value = volume;
+                    volumeDisplay.textContent = Math.round(volume);
+                    if (audioElement) {
+                        audioElement.volume = volume / 100;
+                    }
+
+                    const frequencies = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 12000];
+                    if (settings.equalizer && settings.equalizer.length === frequencies.length) {
+                        eqSliders.forEach((slider, index) => {
+                            const gainValue = settings.equalizer[index];
+                            slider.value = gainValue;
+                            updateEqValue(slider);
+                            if (eqFilters && eqFilters[index]) {
+                                eqFilters[index].gain.value = gainValue;
+                            }
+                        });
+                    }
+
+                    if (settings.compressor && compressor) {
+                        compressor.threshold.value = settings.compressor.threshold;
+                        compressor.ratio.value = settings.compressor.ratio;
+                        compressor.attack.value = settings.compressor.attack;
+                        compressor.release.value = settings.compressor.release;
+                        compressorThresholdSlider.value = settings.compressor.threshold;
+                        compressorRatioSlider.value = settings.compressor.ratio;
+                        compressorAttackSlider.value = settings.compressor.attack;
+                        compressorReleaseSlider.value = settings.compressor.release;
+                        updateCompressorValueDisplays();
+                    }
+
+                    if (settings.currentStation) {
+                        currentStationUrl = settings.currentStation.url;
+                        currentStationName = settings.currentStation.name;
+                        currentStationDisplay.textContent = currentStationName;
+                        if (currentStationUrl) {
+                            loadStation(currentStationUrl);
+                            // Update the visual selection in the station grid
+                            setTimeout(() => {
+                                const stationItems = document.querySelectorAll('.station-item');
+                                stationItems.forEach(item => {
+                                    if (item.dataset.url === currentStationUrl) {
+                                        item.classList.add('selected');
+                                    }
+                                });
+                            }, 1000); // Wait for stations to load
+                        }
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to load settings. Using defaults.', e);
+            }
+        }
+
+        // Update EQ value display
+        function updateEqValue(slider) {
+            const value = parseFloat(slider.value);
+            const valueDisplay = slider.parentElement.querySelector('.eq-value');
+            valueDisplay.textContent = (value > 0 ? '+' : '') + value + 'dB';
+        }
+
+        // Audio Chain Connection with better error handling
+        function connectAudioChain() {
+            if (!source || !eqFilters || !masterGain || !analyser || !compressor) {
+                console.error('Missing audio nodes for connection');
+                return;
+            }
+
+            // Disconnect existing connections
+            try {
+                source.disconnect();
+                eqFilters.forEach(filter => filter.disconnect());
+                compressor.disconnect();
+                analyser.disconnect();
+                masterGain.disconnect();
+            } catch (e) {
+                // Ignore disconnect errors on first connection
+            }
+
+            // Connect the main audio chain
+            source.connect(eqFilters[0]);
+
+            // Chain the EQ filters
+            for (let i = 0; i < eqFilters.length - 1; i++) {
+                eqFilters[i].connect(eqFilters[i + 1]);
+            }
+
+            // Connect final EQ filter to the Compressor
+            eqFilters[eqFilters.length - 1].connect(compressor);
+
+            // Connect Compressor output to both Analyser and Master Gain
+            compressor.connect(analyser);
+            compressor.connect(masterGain);
+
+            // Connect analyser and master gain to the speakers
+            analyser.connect(audioCtx.destination);
+            masterGain.connect(audioCtx.destination);
+
+            console.log('Audio chain connected successfully with Compressor');
+        }
+
+        // *** FUNCTION: Handles loading and connecting a station with better cleanup ***
+        function loadStation(url) {
+             if (isLoadingStation) {
+                 console.log('Station loading already in progress, ignoring request');
+                 return;
+             }
+
+             isLoadingStation = true;
+
+             try {
+                 // Stop and cleanup existing audio
+                 if (audioElement) {
+                     audioElement.pause();
+                     audioElement.removeEventListener('error', handleAudioError);
+                     audioElement.src = '';
+                     audioElement.load();
+                 }
+
+                 // Cleanup Web Audio connections
+                 if (source) {
+                     try {
+                         source.disconnect();
+                     } catch (e) {
+                         console.warn('Source disconnect error:', e);
+                     }
+                     source = null;
+                 }
+
+                 // Create new audio element
+                 audioElement = new Audio();
+                 audioElement.crossOrigin = 'anonymous';
+                 audioElement.volume = volume / 100;
+                 audioElement.preload = 'none'; // Don't preload to avoid caching issues
+
+                 // Add cache-busting timestamp
+                 const timestampedUrl = url.includes('?') ?
+                     url + '&_t=' + Date.now() :
+                     url + '?_t=' + Date.now();
+
+                 audioElement.src = timestampedUrl;
+
+                 // Add error handler
+                 audioElement.addEventListener('error', handleAudioError);
+
+                 // Add loaded event to re-enable interactions
+                 audioElement.addEventListener('loadstart', () => {
+                     console.log('Stream loading started');
+                 });
+
+                 audioElement.addEventListener('canplay', () => {
+                     console.log('Stream ready to play');
+                     isLoadingStation = false;
+                     errorMessage.style.display = 'none';
+                 });
+
+                 // Initialize audio context if needed
+                 if (!audioCtx) {
+                     initAudioContext();
+                 }
+
+                 if (audioCtx && audioCtx.state !== 'closed') {
+                     try {
+                         source = audioCtx.createMediaElementSource(audioElement);
+                         connectAudioChain();
+                     } catch (error) {
+                         console.error('Failed to create audio source:', error);
+                         errorMessage.style.display = 'block';
+                         errorMessage.textContent = 'Failed to process audio signal.';
+                         isLoadingStation = false;
+                     }
+                 }
+
+             } catch (error) {
+                 console.error('Error in loadStation:', error);
+                 isLoadingStation = false;
+                 errorMessage.style.display = 'block';
+                 errorMessage.textContent = 'Failed to load station.';
+             }
+        }
+
+        // Separate error handler function
+        function handleAudioError(e) {
+            console.error('Audio error:', e);
+            isLoadingStation = false;
+            errorMessage.style.display = 'block';
+            errorMessage.textContent = 'Station may be offline or URL is invalid.';
+            if (isPlaying) {
+                isPlaying = false;
+                powerButton.textContent = 'PLAY';
+                powerButton.classList.remove('on');
+                powerLed.classList.remove('on');
+            }
+        }
+
+        // Play/Pause Button Functionality
+        powerButton.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            errorMessage.style.display = 'none';
+
+            if (isPlaying) {
+                powerButton.textContent = 'PAUSE';
+                powerButton.classList.add('on');
+                powerLed.classList.add('on');
+
+                if (!audioCtx) {
+                    initAudioContext();
+                } else if (audioCtx.state === 'suspended') {
+                    audioCtx.resume().catch(err => {
+                        console.error('Error resuming AudioContext:', err);
+                        isPlaying = false;
+                        powerButton.textContent = 'PLAY';
+                        powerButton.classList.remove('on');
+                        powerLed.classList.remove('on');
+                        errorMessage.style.display = 'block';
+                        errorMessage.textContent = 'Web stream is offline. Choose another station';
+                    });
+                }
+
+                if (audioElement && currentStationUrl) {
+                    const currentTime = Date.now();
+                    const timeSincePause = currentTime - pauseTime;
+
+                    // If paused for more than 30 seconds, reload for fresh stream
+                    if (timeSincePause > 30000 && pauseTime > 0) {
+                        console.log('Reloading stream for fresh live content after long pause');
+                        loadStation(currentStationUrl);
+                        setTimeout(() => {
+                            if (audioElement && isPlaying) {
+                                audioElement.play().catch(e => {
+                                    console.error('Playback failed:', e);
+                                    isPlaying = false;
+                                    powerButton.textContent = 'PLAY';
+                                    powerButton.classList.remove('on');
+                                    powerLed.classList.remove('on');
+                                    errorMessage.style.display = 'block';
+                                    errorMessage.textContent = 'Playback blocked. Try selecting a station first.';
+                                });
+                            }
+                        }, 200);
+                    } else {
+                        // Normal resume for short pauses
+                        audioElement.play().catch(e => {
+                            console.error('Playback failed:', e);
+                            isPlaying = false;
+                            powerButton.textContent = 'PLAY';
+                            powerButton.classList.remove('on');
+                            powerLed.classList.remove('on');
+                            errorMessage.style.display = 'block';
+                            errorMessage.textContent = 'Playback blocked. Try selecting a station first.';
+                        });
+                    }
+                }
+            } else {
+                // PAUSE
+                powerButton.textContent = 'PLAY';
+                powerButton.classList.remove('on');
+                powerLed.classList.remove('on');
+                pauseTime = Date.now(); // Record when we paused
+
+                if (audioElement) {
+                    audioElement.pause();
+                }
+            }
+        });
+
+        // Volume Knob Functions
+        function drawKnob() {
+            const centerX = 75;
+            const centerY = 75;
+            const radius = 65;
+            const startAngle = (Math.PI / 180) * -140;
+            const endAngle = (Math.PI / 180) * 130;
+            const totalAngle = endAngle - startAngle;
+            const angle = startAngle + (totalAngle * (volume / 100));
+
+            knobCtx.clearRect(0, 0, knobCanvas.width, knobCanvas.height);
+            knobCtx.beginPath();
+            knobCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+            knobCtx.fillStyle = '#222';
+            knobCtx.fill();
+            knobCtx.beginPath();
+            knobCtx.arc(centerX, centerY, radius, startAngle, angle, false);
+            knobCtx.strokeStyle = '#00ffff';
+            knobCtx.lineWidth = 10;
+            knobCtx.stroke();
+            knobCtx.beginPath();
+            knobCtx.arc(centerX, centerY, radius - 15, 0, 2 * Math.PI, false);
+            knobCtx.fillStyle = '#444';
+            knobCtx.fill();
+            knobCtx.strokeStyle = '#666';
+            knobCtx.lineWidth = 2;
+            knobCtx.stroke();
+            const indicatorLength = radius - 15;
+            const indicatorX = centerX + indicatorLength * Math.cos(angle);
+            const indicatorY = centerY + indicatorLength * Math.sin(angle);
+            knobCtx.beginPath();
+            knobCtx.moveTo(centerX, centerY);
+            knobCtx.lineTo(indicatorX, indicatorY);
+            knobCtx.strokeStyle = '#ff5500';
+            knobCtx.lineWidth = 5;
+            knobCtx.stroke();
+
+            volumeDisplay.textContent = Math.round(volume);
+        }
+
+        function handleKnobInteraction(event) {
+            const rect = knobCanvas.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const angle = Math.atan2(event.clientY - centerY, event.clientX - centerX);
+            let volumeAngle = angle * (180 / Math.PI);
+            const startLimit = -140;
+            const endLimit = 130;
+            if (volumeAngle < startLimit) {
+                volumeAngle = startLimit;
+            } else if (volumeAngle > endLimit) {
+                volumeAngle = endLimit;
+            }
+            volume = (volumeAngle - startLimit) * 100 / (endLimit - startLimit);
+            if (audioElement) {
+                try {
+                    audioElement.volume = volume / 100;
+                } catch (e) {}
+            }
+            drawKnob();
+            saveSettings();
+        }
+
+        // Volume Slider Event Handler
+        volumeSlider.addEventListener('input', (e) => {
+            volume = parseFloat(e.target.value);
+            volumeDisplay.textContent = Math.round(volume);
+            if (audioElement) {
+                try {
+                    audioElement.volume = volume / 100;
+                } catch (e) {}
+            }
+            saveSettings();
+        });
+
+        // Audio Context Initialization
+        function initAudioContext() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                masterGain = audioCtx.createGain();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 256;
+                const bufferLength = analyser.frequencyBinCount;
+                const dataArray = new Uint8Array(bufferLength);
+                drawSpectrum(dataArray, bufferLength);
+
+                compressor = audioCtx.createDynamicsCompressor();
+
+                const frequencies = [31,62,125,250,500,1000,2000,4000,8000,12000];
+                eqFilters = frequencies.map(freq => {
+                    const filter = audioCtx.createBiquadFilter();
+                    filter.type = 'peaking';
+                    filter.frequency.value = freq;
+                    filter.Q.value = 1.4;
+                    filter.gain.value = 0;
+                    return filter;
+                });
+
+                loadSettings();
+
+                const frequenciesArr = [31,62,125,250,500,1000,2000,4000,8000,12000];
+                eqSliders.forEach(slider => {
+                    slider.addEventListener('input', () => {
+                        const freq = parseFloat(slider.dataset.freq);
+                        const index = frequenciesArr.indexOf(freq);
+                        if (index !== -1 && eqFilters[index]) {
+                            const value = parseFloat(slider.value);
+                            if (Math.abs(value) < 1) slider.value = 0;
+                            eqFilters[index].gain.value = parseFloat(slider.value);
+                            updateEqValue(slider);
+                            saveSettings();
+                        }
+                    });
+                });
+
+                compressorThresholdSlider.addEventListener('input', (e) => {
+                    if (compressor) {
+                        compressor.threshold.value = parseFloat(e.target.value);
+                        updateCompressorValueDisplays();
+                        saveSettings();
+                    }
+                });
+                compressorRatioSlider.addEventListener('input', (e) => {
+                    if (compressor) {
+                        compressor.ratio.value = parseFloat(e.target.value);
+                        updateCompressorValueDisplays();
+                        saveSettings();
+                    }
+                });
+                compressorAttackSlider.addEventListener('input', (e) => {
+                    if (compressor) {
+                        compressor.attack.value = parseFloat(e.target.value);
+                        updateCompressorValueDisplays();
+                        saveSettings();
+                    }
+                });
+                compressorReleaseSlider.addEventListener('input', (e) => {
+                    if (compressor) {
+                        compressor.release.value = parseFloat(e.target.value);
+                        updateCompressorValueDisplays();
+                        saveSettings();
+                    }
+                });
+
+                console.log('Audio context initialized successfully');
+            } catch (e) {
+                console.error('Error initializing AudioContext:', e);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = 'Your browser does not support the Web Audio API.';
+            }
+        }
+
+        function updateCompressorValueDisplays() {
+            if (compressor) {
+                thresholdValueDisplay.textContent = `${compressor.threshold.value.toFixed(1)} dB`;
+                ratioValueDisplay.textContent = `${compressor.ratio.value.toFixed(1)}`;
+                attackValueDisplay.textContent = `${compressor.attack.value.toFixed(3)} s`;
+                releaseValueDisplay.textContent = `${compressor.release.value.toFixed(2)} s`;
+            }
+        }
+
+        // Load all radio stations
+        async function loadRadioStations() {
+            try {
+                const additionalStations = [
+                    {"name":"The Beat (181.fm, Hip Hop/R&B)","url":"http://listen.181fm.com/181-beat_128k.mp3"},
+                    {"name":"Underground 80s (SomaFM)","url":"https://ice5.somafm.com/u80s-128-mp3"},
+                    {"name":"Hot 108 Jamz (New York, Hip Hop)","url":"https://stream.hot108.com:8000/hot108"},
+                    {"name":"100 Hip Hop and RNB FM (181.fm)","url":"http://listen.181fm.com/181-100hhrnb_128k.mp3"},
+                    {"name":"Streetz 108 (Hip Hop)","url":"http://listen.181fm.com/181-streetz_128k.mp3"},
+                    {"name":"The Box (181.fm, Hip Hop/R&B)","url":"http://listen.181fm.com/181-box_128k.mp3"},
+                    {"name":"DEFJAY (Berlin, Hip Hop/R&B)","url":"http://listen.defjay.de:8000/rnb.mp3"},
+                    {"name":"bigFM Oldschool Rap & Hip-Hop","url":"https://stream.bigfm.de/oldschool-rap"},
+                    {"name":"GotRadio - Hip Hop Stop","url":"http://playerservices.streamtheworld.com/api/livestream-redirect/GOTRADIO_HIPHOP_STOP.mp3"},
+                    {"name":"HipHop/RNB - HitsRadio","url":"http://icecast.radio.net/stream/hitsradio_hiphop.mp3"},
+                    {"name":"Black Beats (Germany, Hip Hop/R&B)","url":"http://stream.blackbeats.fm:8000/blackbeats"},
+                    {"name":"True R'n'B (181.fm)","url":"http://listen.181fm.com/181-truernb_128k.mp3"},
+                    {"name":"70s Hits (181.fm)","url":"http://listen.181fm.com/181-70s_128k.mp3"},
+                    {"name":"Oldies (181.fm)","url":"http://listen.181fm.com/181-oldies_128k.mp3"},
+                    {"name":"Awesome 80s (181.fm)","url":"http://listen.181fm.com/181-awesome80_128k.mp3"},
+                    {"name":"80s Hits - HitsRadio","url":"http://icecast.radio.net/stream/hitsradio_80s.mp3"},
+                    {"name":"80s80s Rock (radio.net)","url":"http://icecast.radio.net/stream/80s80s_rock.mp3"},
+                    {"name":"80s Dance Hits (HitsRadio)","url":"http://icecast.radio.net/stream/hitsradio_80sdance.mp3"},
+                    {"name":"Big 80s Station (181.fm)","url":"http://listen.181fm.com/181-big80s_128k.mp3"},
+                    {"name":"90s Hits (181.fm)","url":"http://listen.181fm.com/181-90s_128k.mp3"},
+                    {"name":"Rock 181 (181.fm)","url":"http://listen.181fm.com/181-rock_128k.mp3"},
+                    {"name":"Classic Rock (181.fm)","url":"http://listen.181fm.com/181-classicrock_128k.mp3"},
+                    {"name":"Alternative Rock (181.fm)","url":"http://listen.181fm.com/181-altrock_128k.mp3"},
+                    {"name":"Hard Rock Heaven (181.fm)","url":"http://listen.181fm.com/181-hardrock_128k.mp3"},
+                    {"name":"Punk Rock (181.fm)","url":"http://listen.181fm.com/181-punk_128k.mp3"},
+                    {"name":"Grunge (181.fm)","url":"http://listen.181fm.com/181-grunge_128k.mp3"},
+                    {"name":"Power 181 (Dance/Electronic)","url":"http://listen.181fm.com/181-power_128k.mp3"},
+                    {"name":"Club 181 (House/Techno)","url":"http://listen.181fm.com/181-club_128k.mp3"},
+                    {"name":"Energy 98 (181.fm, Trance)","url":"http://listen.181fm.com/181-energy98_128k.mp3"},
+                    {"name":"Techno 181","url":"http://listen.181fm.com/181-techno_128k.mp3"},
+                    {"name":"The Buzz (Alternative Rock)","url":"http://listen.181fm.com/181-buzz_128k.mp3"},
+                    {"name":"90s Dance (181.fm)","url":"http://listen.181fm.com/181-90sdance_128k.mp3"},
+                    {"name":"Hot Hits USA (181.fm)","url":"http://listen.181fm.com/181-hothitsusa_128k.mp3"},
+                    {"name":"Top 40 (181.fm)","url":"http://listen.181fm.com/181-top40_128k.mp3"},
+                    {"name":"The Hits (181.fm)","url":"http://listen.181fm.com/181-hits_128k.mp3"},
+                    {"name":"Star 90s (181.fm)","url":"http://listen.181fm.com/181-star90s_128k.mp3"},
+                    {"name":"Laser Hot Hits","url":"http://213.175.217.198:8000/laserhq"},
+                    {"name":"Kickin' Country (181.fm)","url":"http://listen.181fm.com/181-kickincountry_128k.mp3"},
+                    {"name":"Real Country (181.fm)","url":"http://listen.181fm.com/181-realcountry_128k.mp3"},
+                    {"name":"Good Time Oldies (181.fm)","url":"http://listen.181fm.com/181-goodtime_128k.mp3"},
+                    {"name":"Real Jazz (181.fm)","url":"http://listen.181fm.com/181-jazz_128k.mp3"},
+                    {"name":"Smooth Jazz (181.fm)","url":"http://listen.181fm.com/181-smoothjazz_128k.mp3"},
+                    {"name":"The Blues (181.fm)","url":"http://listen.181fm.com/181-blues_128k.mp3"},
+                    {"name":"Linn Jazz","url":"http://radio.linn.co.uk:8000/autodj"},
+                    {"name":"Naim Jazz [320k AAC]","url":"https://mscp3.live-streams.nl:8342/jazz-high.aac"},
+                    {"name":"Classical 181","url":"http://listen.181fm.com/181-classical_128k.mp3"},
+                    {"name":"Linn Classical","url":"http://radio.linn.co.uk:8004/autodj"},
+                    {"name":"Naim Classical [320k AAC]","url":"https://mscp3.live-streams.nl:8252/class-high.aac"},
+                    {"name":"Joint Radio Reggae","url":"http://star.jointil.net/proxy/jrn_reggae?mp=/stream"},
+                    {"name":"Reggae 141 (181.fm)","url":"http://listen.181fm.com/181-reggae_128k.mp3"},
+                    {"name":"Radio Alfa 3 Latin Hits","url":"http://stream.zeno.fm/pexep60uhnruv"},
+                    {"name":"Chilled (181.fm)","url":"http://listen.181fm.com/181-chilled_128k.mp3"},
+                    {"name":"Ambient (181.fm)","url":"http://listen.181fm.com/181-ambient_128k.mp3"},
+                    {"name":"Radio Paradise (320k)","url":"http://stream-uk1.radioparadise.com/aac-320"},
+                    {"name":"Deep House Lounge","url":"http://198.15.94.34:8006/stream"},
+                    {"name":"Naim Radio [320k AAC]","url":"https://mscp3.live-streams.nl:8362/high.aac"},
+                    {"name":"Linn Radio","url":"http://radio.linn.co.uk:8003/autodj"},
+                    {"name":"Studio 181 (Eclectic)","url":"http://listen.181fm.com/181-studio_128k.mp3"},
+                    {"name":"Vocal Jazz (181.fm)","url":"http://listen.181fm.com/181-vocaljazz_128k.mp3"},
+                    {"name":"Soft Hits (181.fm)","url":"http://listen.181fm.com/181-softhits_128k.mp3"},
+                    {"name":"Urban Jamz (181.fm)","url":"http://listen.181fm.com/181-urbanjamz_128k.mp3"},
+                    {"name":"Christmas 181 (Seasonal)","url":"http://listen.181fm.com/181-christmas_128k.mp3"},
+                    {"name":"Halloween 181 (Seasonal)","url":"http://listen.181fm.com/181-halloween_128k.mp3"},
+                    {"name":"SomaFM Beat Blender","url":"https://ice4.somafm.com/beatblender-128-mp3"},
+                    {"name":"SomaFM Deep Space One","url":"https://ice4.somafm.com/deepspaceone-128-mp3"},
+                    {"name":"SomaFM Drone Zone","url":"https://ice4.somafm.com/dronezone-128-mp3"},
+                    {"name":"SomaFM Fluid","url":"https://ice4.somafm.com/fluid-128-mp3"},
+                    {"name":"SomaFM Indie Pop Rocks!","url":"https://ice4.somafm.com/indiepop-128-mp3"},
+                    {"name":"SomaFM Groove Salad","url":"https://ice4.somafm.com/groovesalad-128-mp3"},
+                    {"name":"SomaFM Lush","url":"https://ice4.somafm.com/lush-128-mp3"},
+                    {"name":"SomaFM Left Coast 70s","url":"https://ice4.somafm.com/seventies-128-mp3"},
+                    {"name":"SomaFM PopTron","url":"https://ice4.somafm.com/poptron-128-mp3"},
+                    {"name":"SomaFM Suburbs of Goa","url":"https://ice4.somafm.com/suburbsofgoa-128-mp3"},
+                    {"name":"SomaFM ThistleRadio","url":"https://ice4.somafm.com/thistleradio-128-mp3"},
+                    {"name":"The Breeze (181.fm)","url":"http://listen.181fm.com/181-breeze_128k.mp3"},
+                    {"name":"Smooth AC (181.fm)","url":"http://listen.181fm.com/181-smoothac_128k.mp3"},
+                    {"name":"Angel Radio","url":"http://s2.xrad.io:8522/listen.pls?sid=1"},
+                    {"name":"181.fm The Point","url":"http://listen.181fm.com/181-thepoint_128k.mp3"},
+                    {"name":"181.fm The Mix","url":"http://listen.181fm.com/181-themix_128k.mp3"},
+                    {"name":"Radio Caroline","url":"http://sc6.radiocaroline.net:8040/stream.mp3"},
+                    {"name":"Radio Caroline Flashback","url":"http://sc2.radiocaroline.net:10558/listen.pls"},
+                    {"name":"Radio Northsea International","url":"http://radionorthsea.zapto.org:8008/listen.pls"},
+                    {"name":"Radio Seagull","url":"http://stream.radioseagull.net:8000/seagull"},
+                    {"name":"Danubius Radio","url":"http://stream.danubiusradio.hu/danubius_128k"},
+                    {"name":"Radio Osttirol","url":"http://streamplus20.leonex.de:28768/;"}
+                ];
+
+                let allStations = [...additionalStations];
+                try {
+                    const apiResponse = await fetch('https://de1.api.radio-browser.info/json/stations/topclick/100');
+                    if (apiResponse.ok) {
+                        const apiStations = await apiResponse.json();
+                        const formattedApiStations = apiStations.map(s => ({
+                            name: s.name,
+                            url: s.url
+                        }));
+                        allStations = formattedApiStations.concat(additionalStations);
+                    }
+                } catch (e) {
+                    console.warn('API fetch failed, using static stations only:', e);
+                }
+
+                const grid = stationGrid;
+
+                if (allStations.length === 0) {
+                    grid.innerHTML = '<div class="station-item">No stations found</div>';
+                } else {
+                    grid.innerHTML = '';
+                    allStations.forEach(station => {
+                        const stationItem = document.createElement('div');
+                        stationItem.className = 'station-item';
+                        stationItem.textContent = station.name;
+                        stationItem.dataset.url = station.url;
+                        stationItem.dataset.name = station.name;
+
+                        stationItem.addEventListener('click', () => {
+                            // Remove previous selection
+                            document.querySelectorAll('.station-item.selected').forEach(item => {
+                                item.classList.remove('selected');
+                            });
+
+                            // Select this station
+                            stationItem.classList.add('selected');
+                            currentStationUrl = station.url;
+                            currentStationName = station.name;
+                            currentStationDisplay.textContent = station.name;
+
+                            loadStation(station.url);
+
+                            // Auto-play if already playing
+                            if (isPlaying && audioElement) {
+                                audioElement.play().catch(e => {
+                                    console.error('Playback failed on station change:', e);
+                                    isPlaying = false;
+                                    powerButton.textContent = 'PLAY';
+                                    powerButton.classList.remove('on');
+                                    powerLed.classList.remove('on');
+                                    errorMessage.style.display = 'block';
+                                    errorMessage.textContent = 'Playback blocked. Click PLAY to start new station.';
+                                });
+                            }
+
+                            // Hide station grid after selection
+                            stationGrid.classList.remove('visible');
+                            toggleStations.textContent = '📻 Select Station';
+
+                            saveSettings();
+                        });
+
+                        grid.appendChild(stationItem);
+                    });
+                }
+            } catch (e) {
+                console.error('Failed to load radio stations:', e);
+                stationGrid.innerHTML = '<div class="station-item">Failed to load stations</div>';
+            }
+        }
+
+        // Spectrum Analyzer
+        function drawSpectrum() {
+            if (!analyser) return;
+            requestAnimationFrame(drawSpectrum);
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+            spectrumCtx.clearRect(0, 0, spectrumCanvas.width, spectrumCanvas.height);
+            const barWidth = (spectrumCanvas.width / bufferLength) * 2.5;
+            let x = 0;
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = dataArray[i] * (spectrumCanvas.height / 255);
+                const gradient = spectrumCtx.createLinearGradient(0, spectrumCanvas.height, 0, spectrumCanvas.height - barHeight);
+                gradient.addColorStop(0, '#00ffff');
+                gradient.addColorStop(0.5, '#0099ff');
+                gradient.addColorStop(1, '#ffffff');
+                spectrumCtx.fillStyle = gradient;
+                spectrumCtx.fillRect(x, spectrumCanvas.height - barHeight, barWidth, barHeight);
+                x += barWidth + 1;
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function resizeCanvas() {
+            const containerWidth = spectrumCanvas.parentElement.offsetWidth;
+            spectrumCanvas.width = containerWidth;
+            spectrumCanvas.height = 100;
+        }
+
+        // Initialization
+        resizeCanvas();
+        loadSettings();
+
+        const runRadioLoadInBackground = () => {
+            setTimeout(loadRadioStations, 0);
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', runRadioLoadInBackground);
+        } else {
+            runRadioLoadInBackground();
+        }
+
+    </script>
+</body>
+</html>
